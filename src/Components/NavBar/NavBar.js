@@ -15,22 +15,31 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { NavLink as RRNavLink, BrowserRouter as Router, Route } from 'react-router-dom';
 
-import { NewRecipe } from '../Recipe/NewRecipe/NewRecipe';
+import { Recipe } from '../Recipe/Recipe';
 import { Home } from '../Home';
-import {FilterableTable} from '../Recipe/FilterableTable/FilterableTable';
+
 
 export class NavBar extends Component {
     constructor() {
         super();
 
         this.state = {
-            isOpen: false
+            isOpen: false,
+            recipeID: ""
         };
     }
 
     toggle = () => {
         this.setState(prevState => ({ isOpen: !prevState.isOpen }))
     }
+
+    handleClick = event => {
+        this.setState({
+            recipeID: event.target.getAttribute("data")
+        })
+
+    }
+
 
     render() {
         return (
@@ -52,8 +61,9 @@ export class NavBar extends Component {
                 <br></br>
 
                 <Route exact path="/" component={Home} />
-                <Route path="/recipes" component={FilterableTable} />
-                <Route path="/newRecipe" component={NewRecipe} />
+                <Route path="/recipes" render={props => <Recipe pageSelected="list" click={this.handleClick} />} />
+                <Route path="/newRecipe" render={props => <Recipe pageSelected="new" />} />
+                <Route path="/details" render={props => <Recipe pageSelected="recipe" recipeID={this.state.recipeID} />} />
             </Router>
         )
     }
